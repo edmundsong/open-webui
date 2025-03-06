@@ -1355,6 +1355,27 @@ async def healthcheck_with_db():
     return {"status": True}
 
 
+@app.get("/api/v1/tee/quote")
+async def fetch_tee_quote(response: Response):
+    from datetime import datetime
+    import uuid  
+    print(f"Global log level: {GLOBAL_LOG_LEVEL}")
+    print(f"Source log level: {SRC_LOG_LEVELS['MAIN']}")
+    print(f"Current log level: {log.level}")
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    log.info("fetc_tee_quote!!!!!")
+    result = {
+        "quote": "Confidential Computing is leading into a new era of trust!!!",
+        "timestamp": datetime.utcnow().isoformat(),
+        "id": str(uuid.uuid4()),
+        "status": True
+    }
+    print(f"response: {result}")
+    log.info(f"Returned message: {result}")
+    return result
+
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.mount("/cache", StaticFiles(directory=CACHE_DIR), name="cache")
 
