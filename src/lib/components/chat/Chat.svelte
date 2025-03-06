@@ -60,7 +60,8 @@
 		getChatById,
 		getChatList,
 		getTagsById,
-		updateChatById
+		updateChatById,
+		getQuote
 	} from '$lib/apis/chats';
 	import { generateOpenAIChatCompletion } from '$lib/apis/openai';
 	import { processWeb, processWebSearch, processYoutubeVideo } from '$lib/apis/retrieval';
@@ -769,7 +770,18 @@
 		}
 
 		const chatInput = document.getElementById('chat-input');
-		setTimeout(() => chatInput?.focus(), 0);
+	    setTimeout(() => chatInput?.focus(), 0);
+	    	    let _quote = null;
+	    const ENABLE_TEE = true;
+	    if (ENABLE_TEE) {
+		try {
+		    _quote = await getQuote(localStorage.token);
+		    console.log('Quote:', _quote);
+		} catch (error) {
+		    console.error('Failed to fetch quote:', error);
+		}
+	    }
+
 	};
 
 	const loadChat = async () => {
@@ -1817,31 +1829,31 @@
 			console.error(e);
 		}
 	};
-
+         
 	const initChatHandler = async (history) => {
 		let _chatId = $chatId;
 
-		if (!$temporaryChatEnabled) {
-			chat = await createNewChat(localStorage.token, {
-				id: _chatId,
-				title: $i18n.t('New Chat'),
-				models: selectedModels,
-				system: $settings.system ?? undefined,
-				params: params,
-				history: history,
-				messages: createMessagesList(history, history.currentId),
-				tags: [],
-				timestamp: Date.now()
-			});
+	    if (!$temporaryChatEnabled) {
+		chat = await createNewChat(localStorage.token, {
+		    id: _chatId,
+		    title: $i18n.t('New Chat'),
+		    models: selectedModels,
+		    system: $settings.system ?? undefined,
+		    params: params,
+		    history: history,
+		    messages: createMessagesList(history, history.currentId),
+		    tags: [],
+		    timestamp: Date.now()
+		});
 
-			_chatId = chat.id;
-			await chatId.set(_chatId);
+		_chatId = chat.id;
+		await chatId.set(_chatId);
 
-			await chats.set(await getChatList(localStorage.token, $currentChatPage));
-			currentChatPage.set(1);
+		await chats.set(await getChatList(localStorage.token, $currentChatPage));
+		currentChatPage.set(1);
 
-			window.history.replaceState(history.state, '', `/c/${_chatId}`);
-		} else {
+		window.history.replaceState(history.state, '', `/c/${_chatId}`);
+	    } else {
 			_chatId = 'local';
 			await chatId.set('local');
 		}
