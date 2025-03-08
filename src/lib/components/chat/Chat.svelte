@@ -135,6 +135,9 @@
 	let chatFiles = [];
 	let files = [];
 	let params = {};
+        let attestationValid = false;
+        let attestationInfo = null;
+
 
 	$: if (chatIdProp) {
 		(async () => {
@@ -640,11 +643,52 @@
 		}
 	};
 
+// TEE Quote Query and Verification Function
+let _pendingQuoteUpdate = false;
+let _quoteUpateTimestamp = 0;
+  $: {
+    try {
+      console.log('[Chat] attestation State Update:', {
+        valid: attestationValid,
+        info: attestationInfo ? JSON.parse(JSON.stringify(attestationInfo)) : 'undefined'
+      });
+    } catch (e) {
+      console.error('[Chat] attestationInfo failed:', e);
+    }
+  }
+
+const teeQuoteUpate = async () => {
+    const ENABLE_TEE = true;
+    if (!ENABLE_TEE || _pendingQuoteUpdate) return;
+    try {
+	_pendingQuoteUpdate = true;
+	attestationInfo = null;
+	attestationValid = false;
+	const _quote = await getQuote(localStorage.token);
+	console.log('Quote:', _quote);
+	const quoteInfo = structuredClone(_quote);
+	// add Quote Verification API call
+	attestationInfo = quoteInfo;
+	attestationValid = true;
+	_quoteUpateTimestamp = Date.now();
+    } catch (error) {
+	attestationInfo = {
+	    error: error.message,
+	    timestamp: Date.now()
+	};
+	attestationValid = false;
+	console.log('Failed to fetch quote:', attestationInfo);
+    } finally {
+	_pendingQuoteUpdate = false;
+    }
+}
+
 	//////////////////////////
 	// Web functions
 	//////////////////////////
 
-	const initNewChat = async () => {
+const initNewChat = async () => {
+    teeQuoteUpate();
 		if ($page.url.searchParams.get('models')) {
 			selectedModels = $page.url.searchParams.get('models')?.split(',');
 		} else if ($page.url.searchParams.get('model')) {
@@ -770,17 +814,7 @@
 		}
 
 		const chatInput = document.getElementById('chat-input');
-	    setTimeout(() => chatInput?.focus(), 0);
-	    	    let _quote = null;
-	    const ENABLE_TEE = true;
-	    if (ENABLE_TEE) {
-		try {
-		    _quote = await getQuote(localStorage.token);
-		    console.log('Quote:', _quote);
-		} catch (error) {
-		    console.error('Failed to fetch quote:', error);
-		}
-	    }
+  	    setTimeout(() => chatInput?.focus(), 0);
 
 	};
 
@@ -2007,10 +2041,13 @@
 							</div>
 						</div>
 
-						<div class=" pb-[1rem]">
+				 <div class=" pb-[1rem]">
+                                                        {#key _quoteUpateTimestamp}
 							<MessageInput
 								{history}
 								{selectedModels}
+								bind:attestationValid 
+								bind:attestationInfo
 								bind:files
 								bind:prompt
 								bind:autoScroll
@@ -2051,7 +2088,7 @@
 									}
 								}}
 							/>
-
+                                 {/key}
 							<div
 								class="absolute bottom-1 text-xs text-gray-500 text-center line-clamp-1 right-0 left-0"
 							>
