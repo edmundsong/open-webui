@@ -1365,7 +1365,7 @@ async def fetch_tee_quote(response: Response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
-    log.info("fetc_tee_quote!!!!!")
+    log.info("fetch_tee_quote!!!!!")
     result = {
         "quote": "Confidential Computing is leading into a new era of trust!!!",
         "timestamp": datetime.utcnow().isoformat(),
