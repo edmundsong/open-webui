@@ -1,11 +1,11 @@
 ---
-tags: 
-ETA: 
+tags:
+ETA:
 Done: false
 ---
 
 #### System Requirements
-- **Operating System**: Linux 
+- **Operating System**: Linux
 - **Python Version**: Python 3.11+
 - **Node.js Version**: 22.10+
 #### Development Setup Instruction
@@ -22,29 +22,18 @@ cd open-webui
 sudo npm install -g n
 
 # Install specific Node.js version
-sudo npm install 20.18.1
-
-# if meet any connect error, you can use follow way to install
-# install nvm(Node Version Manager)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-
-### install node with verison ID
-nvm install 20.18.1
-
-### if need change node version
-nvm use 20.18.1
+sudo n 20.18.1
 ```
 ###### Install Miniconda
    - Download and install Miniconda:
 ```bash
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh   ### ypu can skip reading install information by enter q
-
+bash Miniconda3-latest-Linux-x86_64.sh
 ```
    - Configure environment paths:
 ```bash
 # Add Miniconda to PATH (replace /path/to/ with actual installation path)
-export PATH="/path/to/miniconda3/bin:$PATH"   ### defaoult path is: /root/miniconda3/bin
+export PATH="/path/to/miniconda3/bin:$PATH"
 
 # Initialize Conda
 conda init
@@ -58,7 +47,7 @@ conda --version
 
 - Enter open-webui
 - Create a `.env` file:
-  
+
     ```
     cp -RPp .env.example .env
     ```
@@ -87,44 +76,37 @@ ANONYMIZED_TELEMETRY=false
 Ensure you replace `ip_address:port` with the actual IP address and port of your **Ollama server** if necessary.
 
 - Install dependencies:
-  
+
     ```
     npm install
     ```
-    
+
 - Build frontend server:
-  
+
     ```
     npm run build
-
-    (when building, may meet error likes "Cannot find package 'pyodide'",then you should need to install
-
-    bash
-    npm install pyodide
-    
-    )
     ```
 + After building the frontend, copy the generated `build` directory to the backend and rename it to `frontend`:
-  
+
     ```
    cp -r build ./backend/open-webui/frontend
 
-   ```
+    ```
 ###### Backend Build and Setup
 
 - Navigate to the backend:
-  
+
     ```
     cd backend
     ```
-    
+
 - Use **Conda** for environment setup:
-  
+
     ```
     conda create --name open-webui python=3.11
     conda activate open-webui
     ```
-    
+
 
 +  Change Pip to Use Aliyun Mirror
 
@@ -143,16 +125,23 @@ index-url = https://mirrors.aliyun.com/pypi/simple/
 
 This ensures that all future package installations automatically use the Aliyun mirror.
 
- (It will take a long time to isntall dependencies, open a tmux session to install)
 - Install python dependencies:
-  
+
     ```
-    yum isntall -y tmux
-    tmux new -s test
     pip install -r requirements.txt -U
     ```
+
 - Start the backend:
-  
+
     ```
     sh dev.sh
     ```
+
+
++ Run open-webui backend
+
+```bash
+        conda activate open-webui
+        sh dev.sh
+```
+
