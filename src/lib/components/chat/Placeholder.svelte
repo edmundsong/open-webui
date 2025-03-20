@@ -38,6 +38,9 @@
 	export let codeInterpreterEnabled = false;
 	export let webSearchEnabled = false;
 
+	export let attestationValid;
+	export let attestationInfo;
+
 	let models = [];
 
 	const selectSuggestionPrompt = async (p) => {
@@ -188,6 +191,8 @@
 				<MessageInput
 					{history}
 					{selectedModels}
+					bind:attestationValid
+					bind:attestationInfo
 					bind:files
 					bind:prompt
 					bind:autoScroll

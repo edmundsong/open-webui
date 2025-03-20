@@ -135,8 +135,9 @@
 	let chatFiles = [];
 	let files = [];
 	let params = {};
-        let attestationValid = false;
-        let attestationInfo = null;
+
+	let attestationValid = false;
+	let attestationInfo = null;
 
 
 	$: if (chatIdProp) {
@@ -2046,7 +2047,7 @@ const initNewChat = async () => {
 							<MessageInput
 								{history}
 								{selectedModels}
-								bind:attestationValid 
+								bind:attestationValid
 								bind:attestationInfo
 								bind:files
 								bind:prompt
@@ -2100,6 +2101,8 @@ const initNewChat = async () => {
 							<Placeholder
 								{history}
 								{selectedModels}
+								bind:attestationValid
+								bind:attestationInfo
 								bind:files
 								bind:prompt
 								bind:autoScroll
