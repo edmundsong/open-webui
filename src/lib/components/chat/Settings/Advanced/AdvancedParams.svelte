@@ -12,6 +12,8 @@
 	export let params = {
 		// Advanced
 		stream_response: null, // Set stream responses for this model individually
+	    attestation: 'disable',
+	    attestation_address: 'http://127.0.0.1/quote_verify',
 		function_calling: null,
 		seed: null,
 		stop: null,
@@ -1164,6 +1166,97 @@
 						class=" bg-transparent text-center w-14"
 						min="-2"
 						step="1"
+					/>
+				</div>
+			</div>
+		{/if}
+	</div>
+	<div>
+		<Tooltip
+			content={$i18n.t(
+				'When enabled, the chat session will attestate the remote environment running model service. Local: using local quote verification service, Remote: using remote verifiation service, need to configure Remote Verfication Service Address. Now only Intel TDX support.'
+			)}
+			placement="top-start"
+			className="inline-tooltip"
+		>
+			<div class=" py-0.5 flex w-full justify-between">
+				<div class=" self-center text-xs font-medium">
+					{$i18n.t('Attestation Mode')}
+				</div>
+ <button
+    class="flex items-center px-3 py-1 rounded-sm transition-colors text-xs"
+    class:bg-red-100={params?.attestation === 'disable'}
+    class:dark:bg-red-800={params.attestation === 'disable'}
+    class:text-red-700={params.attestation === 'disable'}
+    class:dark:text-red-200={params.attestation === 'disable'}
+    
+    class:bg-blue-100={params.attestation === 'local'}
+    class:dark:bg-blue-800={params.attestation === 'local'}
+    class:text-blue-700={params.attestation === 'local'}
+    class:dark:text-blue-200={params.attestation === 'local'}
+    
+    class:bg-green-100={params.attestation === 'remote'}
+    class:dark:bg-green-800={params.attestation === 'remote'}
+    class:text-green-700={params.attestation === 'remote'}
+    class:dark:text-green-200={params.attestation === 'remote'}
+    
+    on:click={() => {
+      params.attestation = 
+        params.attestation === 'disable' ? 'local' :
+        params.attestation === 'local' ? 'remote' : 'disable';
+    }}
+    type="button"
+  >
+    <span class="ml-2">
+      {#if params.attestation === 'disable'}
+        {$i18n.t('Disable')}
+      {:else if params.attestation === 'local'}
+        {$i18n.t('Local')}
+      {:else}
+        {$i18n.t('Remote')}
+      {/if}
+    </span>				
+			</div>
+		</Tooltip>
+	</div>
+	<div class=" py-0.5 w-full justify-between">
+		<Tooltip
+			content={$i18n.t(
+			    'Sets attestation service address. Default as http://127.0.0.1:9090/verify_quote'
+			)}
+			placement="top-start"
+			className="inline-tooltip"
+		>
+			<div class="flex w-full justify-between">
+				<div class=" self-center text-xs font-medium">
+					{$i18n.t('Attesation Service Address')}
+				</div>
+
+				<button
+					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					type="button"
+					on:click={() => {
+						params.attestation_address = (params?.attestation_address ?? null) === null ? '' : null;
+					}}
+				>
+					{#if (params?.attestation_address ?? null) === null}
+						<span class="ml-2 self-center"> {$i18n.t('Default')} </span>
+					{:else}
+						<span class="ml-2 self-center"> {$i18n.t('Custom')} </span>
+					{/if}
+				</button>
+			</div>
+		</Tooltip>
+
+		{#if (params?.stop ?? null) !== null}
+			<div class="flex mt-0.5 space-x-2">
+				<div class=" flex-1">
+					<input
+						class="w-full rounded-lg py-2 px-1 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
+						type="text"
+						placeholder={$i18n.t('Enter attestation service address')}
+						bind:value={params.stop}
+						autocomplete="off"
 					/>
 				</div>
 			</div>
