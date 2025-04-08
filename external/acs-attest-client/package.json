@@ -1,0 +1,25 @@
+{
+  "name": "acs-attest-client",
+  "version": "1.0.0",
+  "description": "The client sdk for Alibaba Cloud Service remote attestation service.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [
+    "TEE",
+    "attestation",
+    "TDX",
+    "SGX"
+  ],
+  "author": "yuguorui",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.8.3",
+    "jose": "^6.0.10",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.2.0",
+    "jwt-decode": "^4.0.0"
+  }
+}

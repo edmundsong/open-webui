@@ -15,7 +15,6 @@
 	export let offset = [0, 4];
 	export let allowHTML = true;
 	export let tippyOptions = {};
-
 	let tooltipElement;
 	let tooltipInstance;
 

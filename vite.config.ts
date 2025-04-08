@@ -2,7 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 // /** @type {import('vite').Plugin} */
 // const viteServerConfig = {
 // 	name: 'log-request-middleware',
@@ -28,7 +28,10 @@ export default defineConfig({
 					dest: 'wasm'
 				}
 			]
-		})
+		}),
+		nodePolyfills({
+			include: ['stream', 'util', 'events', 'http', 'https', 'cypto']
+		}),
 	],
 	define: {
 		APP_VERSION: JSON.stringify(process.env.npm_package_version),

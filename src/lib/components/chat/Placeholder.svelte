@@ -38,6 +38,9 @@
 	export let codeInterpreterEnabled = false;
 	export let webSearchEnabled = false;
 
+        export let attestationValid = false;
+        export let attestationInfo = null;
+
 	let models = [];
 
 	const selectSuggestionPrompt = async (p) => {
@@ -196,6 +199,8 @@
 					bind:codeInterpreterEnabled
 					bind:webSearchEnabled
 					bind:atSelectedModel
+					bind:attestationValid
+					bind:attestationInfo
 					{transparentBackground}
 					{stopResponse}
 					{createMessagePair}

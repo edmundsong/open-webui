@@ -1370,6 +1370,26 @@ async def healthcheck_with_db():
     return {"status": True}
 
 
+@app.get("/api/v1/tee/quote")
+async def fetch_tee_quote(response: Response):
+    from datetime import datetime
+    import uuid
+    import quote_generator
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    quote = quote_generator.generate_quote()
+    quote_hex = bytearray(quote).hex()
+
+    result = {
+        "quote": quote_hex,
+        "quote_parse" : "reserved",
+        "timestamp": datetime.utcnow().isoformat(),
+        "id": str(uuid.uuid4()),
+        "status": True
+    }
+    return result
+
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.mount("/cache", StaticFiles(directory=CACHE_DIR), name="cache")
 
